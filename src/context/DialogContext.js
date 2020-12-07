@@ -1,5 +1,4 @@
 import React, { createContext, useState } from 'react';
-import { v1 as uuid } from 'uuid';
 
 export const DialogContext = createContext();
 

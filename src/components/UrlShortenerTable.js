@@ -1,4 +1,4 @@
-import React, { useEffect, useContext, } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { UrlContext } from "../context/UrlContext";
 import { DialogContext } from "../context/DialogContext";
 import BodyHeader from './BodyHeader';
@@ -8,17 +8,14 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import SearchIcon from "@material-ui/icons/Search";
 import Clear from '@material-ui/icons/Clear';
 import DialogHandler from "./DialogHandler";
+import { SnackbarContext } from '../context/SnackbarContext';
 
-
-const columns = [
-    { field: 'fullUrl', headerName: 'Full URL', sortable: true },
-    { field: 'shorterUrl', headerName: 'Shorter URL', sortable: true },
-];
 
 function UrlShortenerTable() {
 
-    const { urls, setUrls, removeUrl } = useContext(UrlContext);
-    const { dialog, setDialog } = useContext(DialogContext);
+    const { urls, setUrls } = useContext(UrlContext);
+    const { setDialog } = useContext(DialogContext);
+    const { setAlert } = useContext(SnackbarContext);
 
     useEffect(() => {
         axios.get(`/api`)
@@ -30,12 +27,18 @@ function UrlShortenerTable() {
                     });
                     setUrls(res.data);
                 }
+            }, (err) => {
+                setAlert({ open: true, severity: 'error', message: 'ERROR : Could not retrieve data' });
             })
     }, []);
 
-    return (
-        <div>
-            <BodyHeader text='URL List' />
+    function renderTable() {
+        let data = [];
+        if (urls != null && urls.length > 0 && urls[0].id != null) {
+            data = urls;
+        }
+
+        return (
             <MaterialTable
                 title="Table"
                 style={{ margin: 15 }}
@@ -57,11 +60,11 @@ function UrlShortenerTable() {
                         }
                     }
                 ]}
-                data={urls}
+                data={data}
                 icons={{
-                    Clear: (props) => <Clear />,
-                    Search: (props) => <SearchIcon />,
-                    ResetSearch: (props) => <Clear />
+                    Clear: () => <Clear />,
+                    Search: () => <SearchIcon />,
+                    ResetSearch: () => <Clear />
                 }}
                 actions={[
                     {
@@ -80,6 +83,14 @@ function UrlShortenerTable() {
                         color: "black"
                     }
                 }} />
+        );
+
+    }
+
+    return (
+        <div>
+            <BodyHeader text='URL List' />
+            { renderTable()}
             <DialogHandler />
         </div>
     );

@@ -1,14 +1,12 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import Header from '../components/Header';
 import PageNotFound from '../components/PageNotFound';
-import { UrlContext } from '../context/UrlContext';
 
 function Redirect() {
 
-    const { urls, setUrls } = useContext(UrlContext)
     const { shorterUrl } = useParams();
     const [pageFound, setPageFound] = useState(true);
 
@@ -34,7 +32,6 @@ function Redirect() {
         if (!pageFound) {
             return (
                 <React.Fragment>
-                    <Header />
                     <PageNotFound />
                 </React.Fragment>
             );

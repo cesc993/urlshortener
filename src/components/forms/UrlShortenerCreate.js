@@ -1,4 +1,4 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useRef } from 'react';
 import * as Yup from 'yup';
 import Box from '@material-ui/core/Box';
 import { useFormik } from 'formik';
@@ -13,6 +13,7 @@ import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { withStyles } from '@material-ui/core/styles';
 import axios from 'axios';
 import { UrlContext } from "../../context/UrlContext";
+import { SnackbarContext } from '../../context/SnackbarContext';
 
 const styles = {
     inputField: {
@@ -24,7 +25,8 @@ function UrlShortenerCreate(props) {
 
     const { classes } = props;
     const textFieldRef = useRef();
-    const { urls, setUrls, addUrl } = useContext(UrlContext);
+    const { addUrl } = useContext(UrlContext);
+    const { setAlert } = useContext(SnackbarContext);
 
     const matches = useMediaQuery('(min-width:700px)');
 
@@ -123,7 +125,10 @@ function UrlShortenerCreate(props) {
                         formik.setFieldValue('shorterUrl', window.location.host + "/" + res.data.shorterUrl);
                         addUrl(res.data);
                         textFieldRef.current.focus();
+                        setAlert({ open: true, severity: 'success', message: 'SUCCESS : Element inserted correctly' });
                     }
+                }, (err) => {
+                    setAlert({ open: true, severity: 'error', message: 'ERROR : Element insertion issue' });
                 })
         },
     });

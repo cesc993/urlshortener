@@ -1,24 +1,29 @@
 import './App.css';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import Header from './components/Header';
-import UrlShortenerCreate from './components/forms/UrlShortenerCreate';
-import UrlShortenerTable from './components/UrlShortenerTable';
 import UrlContextProvider from '../src/context/UrlContext';
 import DialogContextProvider from '../src/context/DialogContext';
 import Redirect from './views/Redirect';
 import MainPage from './views/MainPage';
+import Documentation from './views/Documentation';
+import PageNotFound from './components/PageNotFound';
+import SnackbarContextProvider from './context/SnackbarContext';
+
 
 function App() {
   return (
     <div className="App">
       <UrlContextProvider>
         <DialogContextProvider>
-          <BrowserRouter>
-            <Switch>
-              <Route path="/:shorterUrl" exact component={Redirect} />
-              <Route path="/" exact component={MainPage} />
-            </Switch>
-          </BrowserRouter>
+          <SnackbarContextProvider>
+            <BrowserRouter>
+              <Switch>
+                <Route path="/docs" exact component={Documentation} />
+                <Route path="/:shorterUrl" exact component={Redirect} />
+                <Route path="/" exact component={MainPage} />
+                <Route path="*" exact component={PageNotFound} />
+              </Switch>
+            </BrowserRouter>
+          </SnackbarContextProvider>
         </DialogContextProvider>
       </UrlContextProvider>
     </div>
